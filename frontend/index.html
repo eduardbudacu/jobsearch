@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <title>Job search</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container-fluid">
+            <h1>JOB Search</h1>
+            <form>
+                <div class="row">
+                  <div class="col">
+                    <input type="text" id="search" class="form-control" placeholder="Search">
+                  </div>
+                  <div class="col">
+                    <button type="button" class="btn btn-primary" onclick="searchJobs()">Search</button>
+                  </div>
+                </div>
+              </form>
+              <div id="results">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Company</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+              </div>
+        </div>
+        
+        <script type="text/javascript">
+
+            async function searchJobs() {
+                let keyword = document.getElementById('search').value
+                document.querySelector('.table tbody').innerHTML = 'Loading ...'
+                let response = await fetch(`/bestjobs?query=${keyword}`)
+                let json = await response.json()
+                document.querySelector('.table tbody').innerHTML = ''
+                json.forEach(el => {
+                    let tr = document.createElement('tr')
+
+                    var td = document.createElement('td')
+                    td.innerHTML = el.title
+                    tr.appendChild(td)
+
+                    td = document.createElement('td')
+                    td.innerHTML = el.location
+                    tr.appendChild(td)
+
+                    td = document.createElement('td')
+                    td.innerHTML = el.company
+                    tr.appendChild(td)
+                    
+                    document.querySelector('.table tbody').appendChild(tr)
+                })
+                console.log(json)
+            }
+
+        </script>
+
+
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </body>
+</html>

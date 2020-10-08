@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    volumes:
+      - .:/app
+      - backend-node-modules:/app/node_modules
+    working_dir: /app
+    command: npx nodemon -L server.js
+    ports:
+      - "127.0.10.2:3001:3001"
+
+volumes:
+  backend-node-modules:
