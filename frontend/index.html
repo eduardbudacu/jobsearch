@@ -21,6 +21,7 @@
                     <thead>
                       <tr>
                         <th scope="col">Title</th>
+                        <th scope="col">Provider</th>
                         <th scope="col">Location</th>
                         <th scope="col">Company</th>
                       </tr>
@@ -36,14 +37,26 @@
             async function searchJobs() {
                 let keyword = document.getElementById('search').value
                 document.querySelector('.table tbody').innerHTML = 'Loading ...'
-                let response = await fetch(`/bestjobs?query=${keyword}`)
-                let json = await response.json()
+                let [res1, res2] = await Promise.all([
+                    fetch(`/bestjobs?query=${keyword}`).then(response => response.json()),
+                    fetch(`/ejobs?query=${keyword}`).then(response => response.json()),
+                ]);
+                let response = res1.concat(res2)
+                response.sort(function(a, b){
+                    if(a.title < b.title) { return -1; }
+                    if(a.title > b.title) { return 1; }
+                    return 0;
+                })
                 document.querySelector('.table tbody').innerHTML = ''
-                json.forEach(el => {
+                response.forEach(el => {
                     let tr = document.createElement('tr')
 
                     var td = document.createElement('td')
                     td.innerHTML = el.title
+                    tr.appendChild(td)
+
+                    var td = document.createElement('td')
+                    td.innerHTML = el.provider
                     tr.appendChild(td)
 
                     td = document.createElement('td')
@@ -56,7 +69,6 @@
                     
                     document.querySelector('.table tbody').appendChild(tr)
                 })
-                console.log(json)
             }
 
         </script>

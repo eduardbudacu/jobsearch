@@ -23,7 +23,7 @@ function extractContent(content) {
         var urlSelector = 'h2 > a'
 
         $('div[data-position]').each(function(i, elem) {
-            jobs.push({title: getText(titleSelector, this, $), company: getText(companySelector, this, $), location: getText(locationSelector, this, $), url: getHref(urlSelector, this, $)})
+            jobs.push({title: getText(titleSelector, this, $), company: getText(companySelector, this, $), location: getText(locationSelector, this, $), url: getHref(urlSelector, this, $), provider: 'bestjobs'})
         })
         resolve(jobs);
     })

@@ -50,7 +50,7 @@ module.exports = async (keyword) => {
         fullfiled.forEach(page => {
             if(page.value['jobs'] != undefined) {
                 page.value['jobs'].forEach(job => {
-                    jobs.push({title:job.title, company: job.company.name, location: job.cities})
+                    jobs.push({title:job.title, company: job.company.name, location: job.cities, provider: "ejobs"})
                 })
             }
         })
