@@ -37,7 +37,7 @@ module.exports = async (keyword) => {
 
     var len = websites.length
     var index = 0
-    var chunk_size = 2
+    var chunk_size = 8
     var jobs = []
     for (index = 0; index < len; index += chunk_size) {
       chunk = websites.slice(index, index+chunk_size);

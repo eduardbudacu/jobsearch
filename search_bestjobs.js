@@ -1,11 +1,17 @@
 const { exec } = require('child_process');
 
 const extractContent = require('./extract_bestjobs')
+const extractNoPages = require('./nopages_bestjobs')
 
 function search(page, keyword) {
     return new Promise((resolve, reject) => {
         keyword = encodeURIComponent(keyword)
-        let command = `curl 'https://www.bestjobs.eu/ro/locuri-de-munca/relevant/${page}?keyword=${keyword}&location=' -s  -H 'authority: www.bestjobs.eu'   -H 'accept: */*'   -H 'dnt: 1'   -H 'x-requested-with: XMLHttpRequest'   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36'   -H 'sec-fetch-site: same-origin'   -H 'sec-fetch-mode: cors'   -H 'sec-fetch-dest: empty'   -H 'referer: https://www.bestjobs.eu/ro/locuri-de-munca?keyword=&location='   -H 'accept-language: en-US,en;q=0.9,ro;q=0.8,co;q=0.7'   -H 'cookie: hl=ro; _nid=211dudYM8G1w3ySJGAEaCugIMXO9zgpGXr_Vcdd78eQ; disclaimer=true; jl-subscribe=1; jl-top-banner=9bc72f0be4c71b706c2d20c1e7e9c0d9; bestjobs_sid2=1ff4cb9c1712d4bb35b33558cdd47519'   --compressed`
+        let command = ''
+        if(page == 1) {
+            command = `curl 'https://www.bestjobs.eu/ro/locuri-de-munca?keyword=${keyword}&location='   -H 'authority: www.bestjobs.eu'   -H 'cache-control: max-age=0'   -H 'dnt: 1'   -H 'upgrade-insecure-requests: 1'   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36'   -H 'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'   -H 'sec-fetch-site: none'   -H 'sec-fetch-mode: navigate'   -H 'sec-fetch-user: ?1'   -H 'sec-fetch-dest: document'   -H 'accept-language: en-US,en;q=0.9,ro;q=0.8,co;q=0.7'   -H 'cookie: hl=ro; _nid=211dudYM8G1w3ySJGAEaCugIMXO9zgpGXr_Vcdd78eQ; disclaimer=true; jl-top-banner=9bc72f0be4c71b706c2d20c1e7e9c0d9; bestjobs_sid2=484315c68f49a8e2a986eaad634d64b9; jl-subscribe=1'   --compressed`
+        } else {
+            command = `curl 'https://www.bestjobs.eu/ro/locuri-de-munca/relevant/${page}?keyword=${keyword}&location=' -s  -H 'authority: www.bestjobs.eu'   -H 'accept: */*'   -H 'dnt: 1'   -H 'x-requested-with: XMLHttpRequest'   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36'   -H 'sec-fetch-site: same-origin'   -H 'sec-fetch-mode: cors'   -H 'sec-fetch-dest: empty'   -H 'referer: https://www.bestjobs.eu/ro/locuri-de-munca?keyword=&location='   -H 'accept-language: en-US,en;q=0.9,ro;q=0.8,co;q=0.7'   -H 'cookie: hl=ro; _nid=211dudYM8G1w3ySJGAEaCugIMXO9zgpGXr_Vcdd78eQ; disclaimer=true; jl-subscribe=1; jl-top-banner=9bc72f0be4c71b706c2d20c1e7e9c0d9; bestjobs_sid2=1ff4cb9c1712d4bb35b33558cdd47519'   --compressed`
+        }
         console.log(command)
         exec(command, (error, stdout, stderr) => {
             if (error) {
@@ -17,13 +23,19 @@ function search(page, keyword) {
     })
 }
 
-
-
 module.exports = async (keyword) => {
 
     let websites = []
 
-    for(var i = 1; i <= 16; i++) {
+    let totalJobs = await search(1, keyword).then(el => extractNoPages(el))
+    let JOBS_PER_PAGE = 24
+    let pages = parseInt(totalJobs / JOBS_PER_PAGE) + 1
+
+    if(pages > 200) {
+        pages = 200
+    }
+
+    for(var i = 1; i <= pages; i++) {
         websites.push(i)
     }
 
@@ -38,12 +50,8 @@ module.exports = async (keyword) => {
       chunk = websites.slice(index, index+chunk_size);
       // Do something if you want with the group
       try {
-        let res = await Promise.allSettled(chunk.map(el => search(el, keyword)))
-        let fullfiled = res.filter(el => el.status == 'fulfilled')
-        let rejected = res.filter(el => el.status == 'rejected')
-        console.log(rejected.length)
-        let parsed = await Promise.allSettled(fullfiled.map(el => extractContent(el.value)))
-        parsed.filter(el => el.status == 'fulfilled').map(el => el.value).forEach(element => {
+        let res = await Promise.allSettled(chunk.map(el => search(el, keyword).then(el => extractContent(el))))
+        res.filter(el => el.status == 'fulfilled').map(el => el.value).forEach(element => {
             jobs = jobs.concat(element)
         }); 
       } catch(err) {
