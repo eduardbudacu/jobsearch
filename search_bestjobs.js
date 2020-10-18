@@ -70,5 +70,6 @@ module.exports = async (keyword) => {
 
     console.info('Execution time (bestjobs): %dms', end)
     console.info('Execution time: %ds %dms', hrend[0], hrend[1] / 1000000)
+    console.info('Results: %d', jobs.length)
     return jobs;
 }

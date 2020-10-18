@@ -61,7 +61,9 @@ module.exports = async (keyword) => {
     var end = new Date() - start,
     hrend = process.hrtime(hrstart)
 
+        
     console.info('Execution time (anofm): %dms', end)
     console.info('Execution time: %ds %dms', hrend[0], hrend[1] / 1000000)
+    console.info('Results: %d', jobs.length)
     return jobs;
 }
