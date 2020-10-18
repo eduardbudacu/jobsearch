@@ -1,5 +1,7 @@
 const { exec } = require('child_process');
 
+const DEBUG = false
+
 const extractContent = require('./extract_bestjobs')
 const extractNoPages = require('./nopages_bestjobs')
 
@@ -12,7 +14,10 @@ function search(page, keyword) {
         } else {
             command = `curl 'https://www.bestjobs.eu/ro/locuri-de-munca/relevant/${page}?keyword=${keyword}&location=' -s  -H 'authority: www.bestjobs.eu'   -H 'accept: */*'   -H 'dnt: 1'   -H 'x-requested-with: XMLHttpRequest'   -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36'   -H 'sec-fetch-site: same-origin'   -H 'sec-fetch-mode: cors'   -H 'sec-fetch-dest: empty'   -H 'referer: https://www.bestjobs.eu/ro/locuri-de-munca?keyword=&location='   -H 'accept-language: en-US,en;q=0.9,ro;q=0.8,co;q=0.7'   -H 'cookie: hl=ro; _nid=211dudYM8G1w3ySJGAEaCugIMXO9zgpGXr_Vcdd78eQ; disclaimer=true; jl-subscribe=1; jl-top-banner=9bc72f0be4c71b706c2d20c1e7e9c0d9; bestjobs_sid2=1ff4cb9c1712d4bb35b33558cdd47519'   --compressed`
         }
-        console.log(command)
+
+        if(DEBUG)
+            console.log(command)
+
         exec(command, (error, stdout, stderr) => {
             if (error) {
 
@@ -63,7 +68,7 @@ module.exports = async (keyword) => {
     var end = new Date() - start,
     hrend = process.hrtime(hrstart)
 
-    console.info('Execution time: %dms', end)
-    console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000)
+    console.info('Execution time (bestjobs): %dms', end)
+    console.info('Execution time: %ds %dms', hrend[0], hrend[1] / 1000000)
     return jobs;
 }
