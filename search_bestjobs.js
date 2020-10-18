@@ -28,7 +28,7 @@ module.exports = async (keyword) => {
     let websites = []
 
     let totalJobs = await search(1, keyword).then(el => extractNoPages(el))
-    let JOBS_PER_PAGE = 24
+    const JOBS_PER_PAGE = 24
     let pages = parseInt(totalJobs / JOBS_PER_PAGE) + 1
 
     if(pages > 200) {
