@@ -37,12 +37,14 @@
             async function searchJobs() {
                 let keyword = document.getElementById('search').value
                 document.querySelector('.table tbody').innerHTML = 'Loading ...'
-                let [res1, res2, res3] = await Promise.all([
+                let [res1, res2, res3, res4, res5] = await Promise.all([
                     fetch(`/bestjobs?query=${keyword}`).then(response => response.json()),
                     fetch(`/ejobs?query=${keyword}`).then(response => response.json()),
                     fetch(`/anofm?query=${keyword}`).then(response => response.json()),
+                    fetch(`/hipo?query=${keyword}`).then(response => response.json()),
+                    fetch(`/olx?query=${keyword}`).then(response => response.json()),
                 ]);
-                let response = res1.concat(res2).concat(res3)
+                let response = res1.concat(res2).concat(res3).concat(res4).concat(res5)
                 response.sort(function(a, b){
                     if(a.title < b.title) { return -1; }
                     if(a.title > b.title) { return 1; }
