@@ -9,6 +9,7 @@ const ejobs = require('./search_ejobs')
 const anofm = require('./search_anofm')
 const hipo = require('./search_hipo')
 const olx = require('./search_olx')
+const jobzz = require('./search_jobzz')
 
 app.get('/anofm', async (req, res) => {
     let jobs = await anofm(req.query.query)
@@ -32,6 +33,11 @@ app.get('/hipo', async (req, res) => {
 
 app.get('/olx', async (req, res) => {
     let jobs = await olx(req.query.query)
+    res.status(200).send(jobs)
+})
+
+app.get('/jobzz', async (req, res) => {
+    let jobs = await jobzz(req.query.query)
     res.status(200).send(jobs)
 })
 
