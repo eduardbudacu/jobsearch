@@ -37,7 +37,7 @@
             async function searchJobs() {
                 let keyword = document.getElementById('search').value
                 document.querySelector('.table tbody').innerHTML = 'Loading ...'
-                let [res1, res2, res3, res4, res5, res6] = await Promise.all([
+                let providers = await Promise.all([
                     fetch(`/bestjobs?query=${keyword}`).then(response => response.json()),
                     fetch(`/ejobs?query=${keyword}`).then(response => response.json()),
                     fetch(`/anofm?query=${keyword}`).then(response => response.json()),
@@ -45,12 +45,28 @@
                     fetch(`/olx?query=${keyword}`).then(response => response.json()),
                     fetch(`/jobzz?query=${keyword}`).then(response => response.json())
                 ]);
-                let response = res1.concat(res2).concat(res3).concat(res4).concat(res5).concat(res6)
+
+                let jobCount = providers.map(el => el.length)
+
+                let providersCount = providers.length
+
+                let maxJobCount = Math.max(...jobCount)
+                
+                response = []
+                for(var i = 0; i < maxJobCount; i++) {
+                  for(var j = 0; j < providersCount; j++) {
+                      if(providers[j].length > 0) {
+                          response.push(providers[j].shift())
+                      }
+                  }
+                }
+
+                /*
                 response.sort(function(a, b){
                     if(a.title < b.title) { return -1; }
                     if(a.title > b.title) { return 1; }
                     return 0;
-                })
+                })*/
                 document.querySelector('.table tbody').innerHTML = ''
                 response.forEach(el => {
                     let tr = document.createElement('tr')
