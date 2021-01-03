@@ -12,6 +12,7 @@ services:
     command: npx nodemon -L server.js
     ports:
       - "127.0.10.2:3001:3001"
+    restart: unless-stopped
 
 volumes:
   backend-node-modules:

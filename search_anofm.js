@@ -1,6 +1,8 @@
 const { exec } = require('child_process');
 
-const DEBUG = false
+const config = require('./config.json')
+
+const DEBUG = config.debug
 
 function search(page, keyword) {
     return new Promise((resolve, reject) => {
@@ -34,6 +36,10 @@ module.exports = async (keyword) => {
     const JOBS_PER_PAGE = 32
     let pages = parseInt(totalJobs / JOBS_PER_PAGE) + 1
 
+    if(pages > config.max_pages) {
+        pages = config.max_pages
+    }
+
     for(var i = 1; i <= pages; i++) {
         websites.push(i)
     }
@@ -43,7 +49,7 @@ module.exports = async (keyword) => {
 
     var len = websites.length
     var index = 0
-    var chunk_size = 8
+    var chunk_size = config.parallel_requests
     var jobs = []
     for (index = 0; index < len; index += chunk_size) {
       chunk = websites.slice(index, index+chunk_size);
