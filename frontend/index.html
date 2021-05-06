@@ -43,7 +43,6 @@
                 document.querySelector('.table tbody').innerHTML = 'Loading ...'
                 let providers = await Promise.all([
                     fetch(`/bestjobs?query=${keyword}`).then(response => response.json()),
-                    fetch(`/ejobs?query=${keyword}`).then(response => response.json()),
                     fetch(`/anofm?query=${keyword}`).then(response => response.json()),
                     fetch(`/hipo?query=${keyword}`).then(response => response.json()),
                     fetch(`/olx?query=${keyword}`).then(response => response.json()),

@@ -9,7 +9,7 @@ services:
       - .:/app
       - backend-node-modules:/app/node_modules
     working_dir: /app
-    command: npx nodemon -L server.js
+    command: npx nodemon server.js
     ports:
       - "127.0.10.2:3001:3001"
     restart: unless-stopped

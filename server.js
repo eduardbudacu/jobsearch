@@ -11,6 +11,7 @@ const hipo = require('./search_hipo')
 const olx = require('./search_olx')
 const jobzz = require('./search_jobzz')
 
+
 app.get('/anofm', async (req, res) => {
     let jobs = await anofm(req.query.query)
     res.status(200).send(jobs)

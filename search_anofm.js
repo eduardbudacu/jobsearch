@@ -7,9 +7,9 @@ const DEBUG = config.debug
 function search(page, keyword) {
     return new Promise((resolve, reject) => {
         keyword = encodeURIComponent(keyword)
-        let limit = 32
+        let limit = 8
         let offset = (page - 1) * limit
-        let command = `curl 'https://www.anofm.ro/dmxConnect/api/oferte_bos/oferte_bos_query2L.php?offset=${offset}&cauta=${keyword}&select=ANOFM&limit=${limit}&localitate=' -s -H 'Connection: keep-alive'   -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36'   -H 'DNT: 1'   -H 'Accept: */*'   -H 'Sec-Fetch-Site: same-origin'   -H 'Sec-Fetch-Mode: cors'   -H 'Sec-Fetch-Dest: empty'   -H 'Referer: https://www.anofm.ro/lmvw.html?agentie=ANOFM&page=8'   -H 'Accept-Language: en-US,en;q=0.9,ro;q=0.8,co;q=0.7'   -H 'Cookie: PHPSESSID=u1s07imm1056vlno7np2g76767'   --compressed`
+        let command = `curl 'https://www.anofm.ro/dmxConnect/api/oferte_bos/oferte_bos_query2L_Test.php?offset=${offset}&cauta=${keyword}&select=ANOFM&limit=${limit}&localitate=' -s -H 'Connection: keep-alive'   -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36'   -H 'DNT: 1'   -H 'Accept: */*'   -H 'Sec-Fetch-Site: same-origin'   -H 'Sec-Fetch-Mode: cors'   -H 'Sec-Fetch-Dest: empty'   -H 'Referer: https://www.anofm.ro/lmvw.html?agentie=ANOFM&page=8'   -H 'Accept-Language: en-US,en;q=0.9,ro;q=0.8,co;q=0.7'   -H 'Cookie: PHPSESSID=u1s07imm1056vlno7np2g76767'   --compressed`
         
         if(DEBUG)
             console.log(command)
@@ -33,10 +33,11 @@ module.exports = async (keyword) => {
 
     let firstPage = await search(1, keyword)
     let totalJobs = firstPage['lmv']['total']
-    const JOBS_PER_PAGE = 32
+    const JOBS_PER_PAGE = 8
     let pages = parseInt(totalJobs / JOBS_PER_PAGE) + 1
-
+    console.log(totalJobs)
     if(pages > config.max_pages) {
+        
         pages = config.max_pages
     }
 
