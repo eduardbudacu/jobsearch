@@ -11,4 +11,4 @@ RUN apt-get install -y curl
 
 RUN npm install
 
-EXPOSE 3001
+EXPOSE $PORT
