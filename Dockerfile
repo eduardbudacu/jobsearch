@@ -12,3 +12,5 @@ RUN apt-get install -y curl
 RUN npm install
 
 EXPOSE $PORT
+
+CMD ["node", "server.js"]
