@@ -1,5 +1,5 @@
 {
-    "max_pages": 5,
+    "max_pages": 8,
     "parallel_requests": 4,
     "debug": true
 }
